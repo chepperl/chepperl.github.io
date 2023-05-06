@@ -1,0 +1,69 @@
+<html>
+<head>
+    <style>
+        body {
+            background-color: #ddd;
+            color: #222;
+            font-family: Arial, Helvetica, sans-serif;
+            padding-bottom: 15vh;
+        }
+        main {
+            width: calc(400px + 25%);
+            margin: auto;
+        }
+        .myname {
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <main>
+    <h1 id="part-1-data-analysis-module">Part 1, Data Analysis Module</h1>
+    <h3 class="myname">By Claire Hepperlen</h3>
+    <h2 id="data-tools">Data Tools</h2>
+    <p>I was already relatively proficient here, as I do enjoy statistics at least a little and much of the module had to do with critical thinking which is another strength of mine. I did get a nice reminder that linear regression is the way you find a line of best fit.</p>
+    <h2 id="big-data">Big Data</h2>
+    <p>I learned a bit about the sources of large datasets and challenges in storage and processing. I learned a bit more about parallelization, which is a good reminder to check out <a href="https://docs.rs/rayon/1.7.0/rayon/">Rayon</a>. The ethical issues around personal info in big data were also interesting to learn about.</p>
+    <h2 id="bias-in-machine-learning">Bias in Machine Learning</h2>
+    <p>I finally learned about what weights actually are and what they do. Besides that, I was already familiar enough with most of the interesting biases inherent to datasets (and thus the models trained on them) that often end up perpetuating discrimination all over. </p>
+    <h2 id="test">Test</h2>
+    <p>The test wasn&#39;t particularly special. It wasn&#39;t super easy or anything; I did have to think a bit about all of the questions, but I could answer all of them fairly well.</p>
+    <h1 id="part-2-making-fun-of-ibm">Part 2, Making Fun of IBM</h1>
+    <h2 id="the-big-question">The Big Question</h2>
+    <p>Which employees enjoy their jobs at a company still using large amounts of COBOL code completely unironically?</p>
+    <h2 id="the-method">The Method</h2>
+    <p>Any good data analysis requires data to analyze. The dataset in question? <a href="https://www.kaggle.com/datasets/rohitsahoo/employee">This one</a> that tracked a bunch of IBM employees, including convenient factors like department and job satisfaction. I decided to average the latter based on the former. I ran some nice little code to do this in an Anaconda Nucleus notebook instance. The code in question (given that there is a file in the same directory as the notebook called &quot;train.csv&quot;) was:</p>
+    <pre><code class="language-python">import pandas as pd
+df = pd.read_csv(&quot;train.csv&quot;, usecols=[&quot;Department&quot;, &quot;JobSatisfaction&quot;])
+
+# Sort the data by department, ends up in the unaveraged dict.
+unaveraged = {}
+department = df[&quot;Department&quot;]
+satisfaction = df[&quot;JobSatisfaction&quot;]
+for i in range(len(df[&quot;Department&quot;])):
+    cur_dept = df[&quot;Department&quot;][i]
+    cur_sat = df[&quot;JobSatisfaction&quot;][i]
+    if not cur_dept in unaveraged.keys():
+        unaveraged[cur_dept] = []
+    unaveraged[cur_dept].append(cur_sat)
+
+# Average all of the data by department
+averaged = {}
+ua_keys = unaveraged.keys()
+for k in ua_keys:
+    averaged[k] = 0
+    sample_size = 0
+    for n in unaveraged[k]:
+        sample_size += 1
+        averaged[k] += n
+    averaged[k] /= sample_size
+</code></pre>
+    <h2 id="the-results">The Results</h2>
+    <p>The most satisfied department in general was the sales department, but not by much. Following closely is surprisingly the R&D department, which says quite a lot about the state of IBM given that they are the ones who probably have to work the most with legacy code to integrate new with old. The worst department in terms of satisfaction out of the 3 in the dataset was Human Resources. Overall, no department breached a 2.73 average on the 4 point scale.</p>
+    <img src="chart.png">
+    <h3>Conclusion</h3>
+    <p>While the average person at IBM seems to not be particularly happy, the most satisfied employees were in sales and R&D.</p>
+</main>
+</body>
+</html>
